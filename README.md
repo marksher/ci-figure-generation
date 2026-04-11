@@ -1,12 +1,12 @@
 # a16z Chart Library
 
-Crawls [a16z.news](https://www.a16z.news/) for data charts and graphs, downloads the source articles, and organizes images by chart type using Claude vision classification.
+Crawls [a16z.news](https://www.a16z.news/) for data charts and graphs, downloads the source articles, and organizes images by chart type using OpenAI o4-mini vision classification.
 
 ## What it does
 
 1. **Enumerates** all articles from the site's sitemap (~175 articles)
 2. **Downloads** articles that contain inline images into `source/`
-3. **Classifies** each image with Claude vision — is it a chart? what kind?
+3. **Classifies** each image with OpenAI o4-mini vision — is it a chart? what kind?
 4. **Saves** charts into `graphs/` organized by type
 
 ## Output structure
@@ -35,10 +35,16 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+Copy `.env.example` to `.env` and fill in your key, or edit `.env` directly:
+
+```
+OPENAI_API_KEY=sk-proj-...
+MODEL=o4-mini
+```
+
 ## Usage
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
 python scrape.py
 ```
 
@@ -47,4 +53,4 @@ The script prints progress as it runs and a summary at the end. It resumes safel
 ## Requirements
 
 - Python 3.12+
-- `ANTHROPIC_API_KEY` — used to classify images with `claude-opus-4-6`
+- `OPENAI_API_KEY` in `.env` — used to classify images with `o4-mini`

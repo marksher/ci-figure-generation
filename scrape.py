@@ -3,7 +3,11 @@
 Crawl https://www.a16z.news/ for chart/graph images.
 
 - Downloads articles containing charts into ./source/YYYY-MM/<slug>/
-- Classifies each image with Claude vision and saves to ./graphs/<type>/
+- Classifies each image with OpenAI o4-mini vision and saves to ./graphs/<type>/
+
+Reads config from .env:
+  OPENAI_API_KEY  — required
+  MODEL           — defaults to o4-mini
 """
 
 import os
@@ -17,18 +21,22 @@ from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
-import anthropic
+from dotenv import load_dotenv
+from openai import OpenAI
 from PIL import Image
 import io
 
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
+load_dotenv()
+
 DOMAIN = "https://www.a16z.news"
 SITEMAP_URL = f"{DOMAIN}/sitemap.xml"
 SOURCE_DIR = Path("source")
 GRAPHS_DIR = Path("graphs")
 CHART_TYPES = ["bar", "line", "pie", "scatter", "table", "other"]
+MODEL = os.getenv("MODEL", "o4-mini")
 DELAY_ARTICLE = 1.0   # seconds between article fetches
 DELAY_IMAGE = 0.5     # seconds between image downloads
 
@@ -41,11 +49,12 @@ HEADERS = {
 # ---------------------------------------------------------------------------
 
 def check_env():
-    key = os.environ.get("ANTHROPIC_API_KEY")
+    key = os.getenv("OPENAI_API_KEY")
     if not key:
-        print("ERROR: ANTHROPIC_API_KEY environment variable is not set.")
-        print("Export it before running: export ANTHROPIC_API_KEY=sk-ant-...")
+        print("ERROR: OPENAI_API_KEY is not set.")
+        print("Add it to .env or export it in your shell.")
         sys.exit(1)
+    print(f"Model: {MODEL}")
     return key
 
 
@@ -88,7 +97,6 @@ def get_publish_date(soup):
     meta = soup.find("meta", property="article:published_time")
     if meta and meta.get("content"):
         return meta["content"][:7]  # YYYY-MM
-    # fallback: look for time tag
     time_tag = soup.find("time")
     if time_tag and time_tag.get("datetime"):
         return time_tag["datetime"][:7]
@@ -100,7 +108,6 @@ def extract_body_images(soup):
     Return substackcdn image URLs from the article body.
     Skips header/thumbnail images.
     """
-    # Substack wraps body content in div.available-content or article
     body = soup.find("div", class_="available-content")
     if not body:
         body = soup.find("article")
@@ -110,9 +117,8 @@ def extract_body_images(soup):
     imgs = []
     for img in body.find_all("img"):
         src = img.get("src", "")
-        # Only substackcdn inline images (not avatars, icons, etc.)
         if "substackcdn.com" in src and "/fetch/" in src:
-            # Normalise to full-res by stripping width constraints
+            # Strip query params for full-res URL
             clean = re.sub(r"\?.*$", "", src)
             if clean not in imgs:
                 imgs.append(clean)
@@ -132,7 +138,7 @@ def save_article(article_dir: Path, url: str, html: str, pub_date: str, image_ur
 
 
 # ---------------------------------------------------------------------------
-# Step 4: Download + classify images with Claude vision
+# Step 4: Download + classify images with OpenAI o4-mini vision
 # ---------------------------------------------------------------------------
 
 def download_image(url: str) -> bytes | None:
@@ -145,12 +151,11 @@ def download_image(url: str) -> bytes | None:
         return None
 
 
-def classify_image(client: anthropic.Anthropic, image_bytes: bytes) -> str:
+def classify_image(client: OpenAI, image_bytes: bytes) -> str:
     """
-    Ask Claude to classify the image.
+    Ask o4-mini to classify the image.
     Returns one of: bar, line, pie, scatter, table, other, skip
     """
-    # Convert to PNG and base64-encode
     try:
         img = Image.open(io.BytesIO(image_bytes))
         buf = io.BytesIO()
@@ -171,19 +176,17 @@ def classify_image(client: anthropic.Anthropic, image_bytes: bytes) -> str:
     )
 
     try:
-        message = client.messages.create(
-            model="claude-opus-4-6",
-            max_tokens=10,
+        response = client.chat.completions.create(
+            model=MODEL,
+            max_completion_tokens=500,
             messages=[
                 {
                     "role": "user",
                     "content": [
                         {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": "image/png",
-                                "data": b64,
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/png;base64,{b64}",
                             },
                         },
                         {"type": "text", "text": prompt},
@@ -191,26 +194,23 @@ def classify_image(client: anthropic.Anthropic, image_bytes: bytes) -> str:
                 }
             ],
         )
-        result = message.content[0].text.strip().lower()
-        # Validate
+        result = response.choices[0].message.content.strip().lower()
         if result in CHART_TYPES:
             return result
         if result == "skip":
             return "skip"
-        # Partial match fallback
         for t in CHART_TYPES:
             if t in result:
                 return t
         return "other"
     except Exception as e:
-        print(f"    [WARN] Claude API error: {e}")
+        print(f"    [WARN] OpenAI API error: {e}")
         return "skip"
 
 
 def save_graph(image_bytes: bytes, chart_type: str, slug: str, idx: int):
     filename = f"{slug}-{idx}.png"
     dest = GRAPHS_DIR / chart_type / filename
-    # Convert to PNG
     try:
         img = Image.open(io.BytesIO(image_bytes))
         img.save(dest, format="PNG")
@@ -225,7 +225,7 @@ def save_graph(image_bytes: bytes, chart_type: str, slug: str, idx: int):
 def main():
     api_key = check_env()
     setup_dirs()
-    client = anthropic.Anthropic(api_key=api_key)
+    client = OpenAI(api_key=api_key)
 
     article_urls = get_article_urls()
 
@@ -241,8 +241,7 @@ def main():
         slug = slug_from_url(url)
         print(f"\n[{i}/{len(article_urls)}] {slug}")
 
-        # --- Check cache ---
-        # Guess a possible cached location (we don't know date yet)
+        # Check cache
         cached_dirs = list(SOURCE_DIR.glob(f"*/{slug}"))
         if cached_dirs:
             print(f"  Cached — loading from {cached_dirs[0]}")
@@ -269,12 +268,11 @@ def main():
             pub_date = get_publish_date(soup)
 
             if not image_urls:
-                print(f"  No body images — skipping")
+                print("  No body images — skipping")
                 stats["skipped_no_images"] += 1
                 time.sleep(DELAY_ARTICLE)
                 continue
 
-            # Save article
             article_dir = SOURCE_DIR / pub_date / slug
             save_article(article_dir, url, html, pub_date, image_urls)
             print(f"  Saved article → source/{pub_date}/{slug}/ ({len(image_urls)} images)")
