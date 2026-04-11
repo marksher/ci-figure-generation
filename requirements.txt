@@ -4,3 +4,7 @@ lxml
 openai
 python-dotenv
 Pillow
+matplotlib
+seaborn
+pandas
+numpy
