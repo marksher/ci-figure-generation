@@ -182,20 +182,57 @@ def _apply_theme(
 
     # ── Branding (bottom-right) ───────────────────────────────────────────────
     if t.branding.get("show", True):
-        fig.add_annotation(
-            x=1, y=0,
-            xref="paper", yref="paper",
-            text=f"<b>{t.branding['text']}</b>",
-            showarrow=False,
-            xanchor="right",
-            yanchor="top",
-            yshift=-26,
-            font=dict(
-                size=t.branding["font_size"],
-                family=t.fonts["family"],
-                color=t.branding["color"],
-            ),
-        )
+        image_path = t.branding.get("image")
+        if image_path:
+            # Resolve local file → base64 data URI; URLs pass through as-is
+            import base64 as _b64
+            from pathlib import Path as _P
+            p = _P(image_path)
+            if p.exists():
+                ext = p.suffix.lower().lstrip(".")
+                mime = {
+                    "svg": "image/svg+xml",
+                    "png": "image/png",
+                    "jpg": "image/jpeg",
+                    "jpeg": "image/jpeg",
+                }.get(ext, "image/png")
+                src = f"data:{mime};base64,{_b64.b64encode(p.read_bytes()).decode()}"
+            else:
+                src = image_path  # treat as URL
+
+            # sizex/sizey are paper fractions relative to the plot area;
+            # convert the pixel spec using the figure's plot-area dimensions.
+            plot_w = width - t.margins.get("left", 60) - t.margins.get("right", 50)
+            plot_h = height - t.margins.get("top", 90) - t.margins.get("bottom", 60)
+            sizex = t.branding.get("image_width", 60) / max(plot_w, 1)
+            sizey = t.branding.get("image_height", 20) / max(plot_h, 1)
+
+            fig.add_layout_image(
+                source=src,
+                xref="paper", yref="paper",
+                x=1, y=0,
+                xanchor="right", yanchor="top",
+                sizex=sizex,
+                sizey=sizey,
+                sizing="contain",
+                opacity=t.branding.get("opacity", 1.0),
+                layer="above",
+            )
+        else:
+            fig.add_annotation(
+                x=1, y=0,
+                xref="paper", yref="paper",
+                text=f"<b>{t.branding['text']}</b>",
+                showarrow=False,
+                xanchor="right",
+                yanchor="top",
+                yshift=-26,
+                font=dict(
+                    size=t.branding["font_size"],
+                    family=t.fonts["family"],
+                    color=t.branding["color"],
+                ),
+            )
 
     return fig
 

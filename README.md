@@ -343,7 +343,11 @@ legend:
 
 branding:
   show: true
-  text: "MY BRAND"
+  text: "MY BRAND"         # shown when no image is set
+  # image: "logo.svg"      # SVG, PNG, or JPG — local path or URL; takes priority over text
+  # image_width: 60        # pixels (default 60)
+  # image_height: 20       # pixels (default 20)
+  # opacity: 1.0
   position: "bottom_right"
   color: "#000000"
   font_size: 10

@@ -67,3 +67,30 @@ if __name__ == "__main__":
     save_png(fig2, os.path.join(OUT, "bar_stacked.png"))
     fig2.write_html(os.path.join(OUT, "bar_stacked.html"))
     print("bar_stacked.png written")
+
+    # ── Example 3: SVG logo branding ─────────────────────────────────────────
+    # Demonstrates replacing the text brand with a company logo image.
+    # Swap logo.svg for your own file (SVG recommended; PNG and JPG also work).
+    from chart_library import load_theme
+    import copy
+    theme_logo = copy.deepcopy(load_theme("a16z-news"))
+    theme_logo.branding["image"] = os.path.join(OUT, "logo.svg")
+    theme_logo.branding["image_width"] = 70
+    theme_logo.branding["image_height"] = 18
+
+    fig3 = bar(
+        _df2,
+        x="year",
+        y=["Microsoft", "Meta", "Alphabet", "Amazon", "Oracle"],
+        title="Hyperscaler Capex To The Moon",
+        subtitle="Combined capital expenditures expected to top $650 billion in 2026",
+        source="Bloomberg",
+        stacked=True,
+        show_values=False,
+        theme=theme_logo,
+        width=900,
+        height=560,
+    )
+    save_png(fig3, os.path.join(OUT, "bar_logo.png"))
+    fig3.write_html(os.path.join(OUT, "bar_logo.html"))
+    print("bar_logo.png written")
