@@ -1,6 +1,6 @@
 """
-Generate all.html — a gallery of all 7 chart types using the a16z-news theme.
-Each section shows: chart type / interactive / PNG / SVG side by side.
+Generate all.html — gallery of all chart types using the a16z-news theme.
+Each section shows: chart type / interactive / PNG / SVG at matching sizes.
 Run from the repo root: python examples/generate_all.py
 """
 
@@ -22,16 +22,20 @@ import scatter as scatter_ex
 import pie as pie_ex
 import table as table_ex
 import map as map_ex
+import diverging_bar as diverging_bar_ex
+import sparkline as sparkline_ex
 
-# ── Chart registry: (display name, figure, png filename, svg filename) ────────
+# ── Chart registry: (display name, figure, png, svg) ─────────────────────────
 CHARTS = [
-    ("Bar",     bar_ex.make_fig(),     "bar_stacked.png", "bar_stacked.svg"),
-    ("Line",    line_ex.make_fig(),    "line.png",        "line.svg"),
-    ("Area",    area_ex.make_fig(),    "area.png",        "area.svg"),
-    ("Scatter", scatter_ex.make_fig(), "scatter.png",     "scatter.svg"),
-    ("Pie",     pie_ex.make_fig(),     "pie.png",         "pie.svg"),
-    ("Table",   table_ex.make_fig(),   "table.png",       "table.svg"),
-    ("Map",     map_ex.make_fig(),     "map.png",         "map.svg"),
+    ("Bar",           bar_ex.make_fig(),           "bar_stacked.png",    "bar_stacked.svg"),
+    ("Line",          line_ex.make_fig(),           "line.png",           "line.svg"),
+    ("Area",          area_ex.make_fig(),           "area.png",           "area.svg"),
+    ("Scatter",       scatter_ex.make_fig(),        "scatter.png",        "scatter.svg"),
+    ("Pie",           pie_ex.make_fig(),            "pie.png",            "pie.svg"),
+    ("Table",         table_ex.make_fig(),          "table.png",          "table.svg"),
+    ("Map",           map_ex.make_fig(),            "map.png",            "map.svg"),
+    ("Diverging Bar", diverging_bar_ex.make_fig(),  "diverging_bar.png",  "diverging_bar.svg"),
+    ("Sparkline",     sparkline_ex.make_fig(),      "sparkline.png",      "sparkline.svg"),
 ]
 
 
@@ -87,7 +91,10 @@ for i, (name, fig, png_name, svg_name) in enumerate(CHARTS):
     png_b64 = encode_file(png_path)
     svg_b64 = encode_file(svg_path)
 
-    fig.update_layout(autosize=True)
+    # Fixed pane width = chart native width + horizontal padding (16px each side)
+    chart_w = fig.layout.width or 900
+    pane_w = chart_w + 32
+
     include_plotlyjs = "cdn" if i == 0 else False
     chart_html = fig.to_html(include_plotlyjs=include_plotlyjs, full_html=False,
                               config={"displayModeBar": False, "responsive": True})
@@ -96,15 +103,15 @@ for i, (name, fig, png_name, svg_name) in enumerate(CHARTS):
   <section class="chart-section">
     <h2>{name}</h2>
     <div class="chart-row">
-      <div class="chart-pane chart-interactive">
+      <div class="chart-pane chart-interactive" style="width:{pane_w}px">
         <div class="pane-label">Interactive</div>
         {chart_html}
       </div>
-      <div class="chart-pane chart-static">
+      <div class="chart-pane chart-static" style="width:{pane_w}px">
         <div class="pane-label">PNG export</div>
         <img src="data:image/png;base64,{png_b64}" alt="{name} chart PNG" />
       </div>
-      <div class="chart-pane chart-svg">
+      <div class="chart-pane chart-svg" style="width:{pane_w}px">
         <div class="pane-label">SVG export</div>
         <img src="data:image/svg+xml;base64,{svg_b64}" alt="{name} chart SVG" />
       </div>
@@ -218,19 +225,21 @@ html = """<!DOCTYPE html>
       letter-spacing: 0.05em;
     }
 
+    /* Horizontal scroll so all 3 panes stay at native chart size */
     .chart-row {
       display: flex;
       gap: 20px;
-      align-items: flex-start;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      padding-bottom: 8px;
     }
 
     .chart-pane {
-      flex: 1;
+      flex-shrink: 0;
       background: #FAF7F4;
       border: 1.5px solid #C8C0B4;
       border-radius: 4px;
       padding: 16px;
-      min-width: 0;
     }
 
     .pane-label {
@@ -250,10 +259,6 @@ html = """<!DOCTYPE html>
 
     .chart-interactive .plotly-graph-div {
       width: 100% !important;
-    }
-
-    @media (max-width: 1100px) {
-      .chart-row { flex-direction: column; }
     }
   </style>
 </head>

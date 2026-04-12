@@ -25,9 +25,11 @@ Swap themes
 """
 
 from .charts.bar import bar
+from .charts.diverging_bar import diverging_bar
 from .charts.line import line
 from .charts.area import area
 from .charts.scatter import scatter
+from .charts.sparkline import sparkline
 from .charts.pie import pie
 from .charts.table import table
 from .charts.map import map_chart
@@ -38,7 +40,9 @@ __version__ = "0.1.0"
 
 __all__ = [
     "bar",
+    "diverging_bar",
     "line",
+    "sparkline",
     "area",
     "scatter",
     "pie",
