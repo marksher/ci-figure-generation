@@ -8,23 +8,35 @@ import os
 import sys
 import base64
 
+import importlib.util
+
 # Add scripts/ to path so chart_library is importable from example files
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
-# Add examples/care-indeed/ to path so we can import make_fig from each example
-EXAMPLES_DIR = os.path.dirname(__file__)
-sys.path.insert(0, EXAMPLES_DIR)
+EXAMPLES_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Also add a16z-news so data modules are importable
+# Add a16z-news to sys.path so care-indeed modules can resolve their data imports.
+# Do NOT add care-indeed itself — that causes circular name collisions since
+# both directories share the same filenames (bar.py, line.py, …).
 sys.path.insert(0, os.path.join(EXAMPLES_DIR, "../a16z-news"))
 
-import bar as bar_ex
-import line as line_ex
-import area as area_ex
-import scatter as scatter_ex
-import pie as pie_ex
-import table as table_ex
-import map as map_ex
+
+def _load(name: str):
+    """Load a care-indeed example module by file path, avoiding sys.modules collisions."""
+    path = os.path.join(EXAMPLES_DIR, f"{name}.py")
+    spec = importlib.util.spec_from_file_location(f"ci_{name}", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+bar_ex     = _load("bar")
+line_ex    = _load("line")
+area_ex    = _load("area")
+scatter_ex = _load("scatter")
+pie_ex     = _load("pie")
+table_ex   = _load("table")
+map_ex     = _load("map")
 
 # ── Chart registry: (display name, figure, png filename) ─────────────────────
 
