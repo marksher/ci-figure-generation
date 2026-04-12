@@ -1,0 +1,120 @@
+name: care-indeed
+version: "1.0"
+description: Care Indeed brand theme — warm orange primary, deep teal secondary, Montserrat/Roboto
+
+# ── Background ────────────────────────────────────────────────────────────────
+background: "#FFFAF7"
+plot_background: "#FFFAF7"
+
+# ── Text colors ───────────────────────────────────────────────────────────────
+text:
+  title: "#1F1C1B"      # neutral-800 — very dark warm brown
+  subtitle: "#524D4B"   # neutral-600
+  axis: "#7A7470"       # neutral-500
+  source: "#9E9691"     # neutral-400
+  label: "#524D4B"
+
+# ── Data palette ──────────────────────────────────────────────────────────────
+palette:
+  - "#FF6B35"   # orange primary (primary-500)
+  - "#00797D"   # deep teal (secondary-500)
+  - "#C74601"   # rust/dark orange (primary-700)
+  - "#06A6AB"   # light teal (secondary-300)
+  - "#FF914D"   # lighter orange (primary-400)
+  - "#004142"   # dark teal (secondary-700)
+  - "#FFA473"   # peach (primary-300)
+
+# ── Typography ────────────────────────────────────────────────────────────────
+fonts:
+  family: "Montserrat, Roboto, sans-serif"
+
+font_sizes:
+  title: 22
+  subtitle: 13
+  axis_tick: 10
+  axis_label: 11
+  source: 9
+  data_label: 9
+
+font_weights:
+  title: "bold"
+  subtitle: "normal"
+
+# ── Layout ────────────────────────────────────────────────────────────────────
+margins:
+  top: 90
+  bottom: 60
+  left: 60
+  right: 60
+
+# ── Grid ──────────────────────────────────────────────────────────────────────
+grid:
+  color: "#E5E4E3"      # neutral-100 warm light gray
+  width: 1
+  horizontal: true
+  vertical: false
+
+# ── Spines ────────────────────────────────────────────────────────────────────
+spines:
+  top: false
+  right: false
+  color: "#D9D6D5"      # neutral-200
+  width: 1
+
+# ── Legend ────────────────────────────────────────────────────────────────────
+legend:
+  position: "bottom"
+  orientation: "h"
+  marker: "circle"
+  border: false
+
+# ── Branding ──────────────────────────────────────────────────────────────────
+branding:
+  show: true
+  text: "CARE INDEED"
+  # image: "logo.svg"   # replace with your logo file path
+  # image_width: 80
+  # image_height: 20
+  position: "bottom_right"
+  color: "#1F1C1B"
+  font_size: 9
+  font_weight: "bold"
+
+# ── Source attribution ────────────────────────────────────────────────────────
+source:
+  prefix: "Source: "
+  position: "bottom_left"
+  italic: true
+
+# ── Chart-type overrides ──────────────────────────────────────────────────────
+bar:
+  gap: 0.25
+  group_gap: 0.05
+
+line:
+  width: 2.5
+  end_labels: true
+  markers: false
+  marker_size: 6
+
+area:
+  opacity: 0.75
+  line_width: 0
+
+scatter:
+  marker_size: 8
+  opacity: 0.85
+
+pie:
+  hole: 0.55
+
+table:
+  header_background: "#004142"   # dark teal
+  header_text: "#FFFFFF"
+  highlight_color: "#FFF5F0"     # very light orange tint
+  border_color: "#E5E4E3"
+
+map:
+  land_color: "#F0EDE8"
+  ocean_color: "#D9D6D5"
+  border_color: "#C0BBB9"
