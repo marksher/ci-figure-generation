@@ -140,13 +140,17 @@ swatch_section = f"""
 # ── Build chart sections ──────────────────────────────────────────────────────
 sections = []
 for i, (name, fig, png_name, svg_name, py_name) in enumerate(CHARTS):
-    png_path = os.path.join(EXAMPLES_DIR, png_name)
-    svg_path = os.path.join(EXAMPLES_DIR, svg_name)
-    py_path  = os.path.join(EXAMPLES_DIR, py_name)
+    png_path  = os.path.join(EXAMPLES_DIR, png_name)
+    svg_path  = os.path.join(EXAMPLES_DIR, svg_name)
+    py_path   = os.path.join(EXAMPLES_DIR, py_name)
+    json_path = os.path.join(EXAMPLES_DIR, py_name.replace(".py", ".json"))
 
-    png_b64 = encode_file(png_path)
-    svg_b64 = encode_file(svg_path)
-    snippet = _extract_snippet(py_path)
+    png_b64   = encode_file(png_path)
+    svg_b64   = encode_file(svg_path)
+    snippet   = _extract_snippet(py_path)
+
+    with open(json_path, encoding="utf-8") as f:
+        json_snippet = _html.escape(f.read().strip())
 
     chart_w = fig.layout.width or 900
     pane_w  = chart_w + 32
@@ -172,6 +176,10 @@ for i, (name, fig, png_name, svg_name, py_name) in enumerate(CHARTS):
         <img src="data:image/svg+xml;base64,{svg_b64}" alt="{name} chart SVG" />
       </div>
     </div>
+    <details class="code-snippet">
+      <summary>JSON config</summary>
+      <pre><code class="language-json">{json_snippet}</code></pre>
+    </details>
     <details class="code-snippet">
       <summary>Python</summary>
       <pre><code class="language-python">{snippet}</code></pre>
