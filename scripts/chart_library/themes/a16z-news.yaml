@@ -70,7 +70,7 @@ legend:
 
 # ── Branding ──────────────────────────────────────────────────────────────────
 branding:
-  show: true
+  show: false
   text: "A16Z"             # shown when no image is set
   # image: "logo.svg"      # SVG, PNG, or JPG — local path or URL; takes priority over text
   # image_width: 60        # pixels (default 60)
