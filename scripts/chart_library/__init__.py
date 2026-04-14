@@ -35,6 +35,7 @@ from .charts.table import table
 from .charts.map import map_chart
 from .charts.stat_card import stat_card
 from .charts.big_number import big_number
+from .charts.gauge import gauge
 from .themes.base import load_theme, Theme
 from .utils.layout import save_png, save_svg
 
@@ -55,6 +56,7 @@ __all__ = [
     "map_chart",
     "stat_card",
     "big_number",
+    "gauge",
     "load_theme",
     "Theme",
     "save_png",

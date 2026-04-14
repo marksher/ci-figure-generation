@@ -45,6 +45,7 @@ sparkline_area_ex = _load("sparkline_area")
 sparkline_bar_ex  = _load("sparkline_bar")
 stat_card_ex      = _load("stat_card")
 big_number_ex     = _load("big_number")
+gauge_ex          = _load("gauge")
 
 # ── Chart registry: (display name, figure, png, svg, source file) ─────────────
 CHARTS = [
@@ -61,6 +62,7 @@ CHARTS = [
     ("Sparkline Bar", sparkline_bar_ex.make_fig(),   "sparkline_bar.png",  "sparkline_bar.svg",  "sparkline_bar.py"),
     ("Stat Card",    stat_card_ex.make_fig(),       "stat_card.png",      "stat_card.svg",      "stat_card.py"),
     ("Big Number",   big_number_ex.make_fig(),       "big_number.png",     "big_number.svg",     "big_number.py"),
+    ("Gauge",        gauge_ex.make_fig(),            "gauge.png",          "gauge.svg",          "gauge.py"),
 ]
 
 

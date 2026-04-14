@@ -128,3 +128,9 @@ stat_card:
 big_number:
   value_font_size: 56
   label_font_size: 13
+
+gauge:
+  arc_bg_color: "#E0DAD0"
+  value_font_size: 32
+  label_font_size: 13
+  min_max_font_size: 11

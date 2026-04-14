@@ -340,6 +340,27 @@ fig = big_number(
 
 ---
 
+### Gauge
+
+Semicircular dial chart with a colored header banner, arc fill, and min/max labels.
+
+```python
+from chart_library import gauge
+
+fig = gauge(
+    value=73,
+    label="Engagement Rate",
+    min_val=0,
+    max_val=100,
+    width=300,
+    height=280,
+)
+```
+
+![Gauge example](examples/a16z-news/gauge.png)
+
+---
+
 ## Themes
 
 The visual style — fonts, colors, grid, margins, branding, legend — is fully defined in a YAML file. Swap it out entirely, point to a custom file, or pass `None` to use plain Plotly defaults (no custom fonts, colors, or branding).

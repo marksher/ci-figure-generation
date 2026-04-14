@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 from chart_library import (
     bar, line, area, scatter, pie, table, map_chart,
     diverging_bar, sparkline_line, sparkline_area, sparkline_bar,
-    stat_card, big_number,
+    stat_card, big_number, gauge,
     load_theme, Theme,
     save_png, save_svg,
 )
@@ -116,6 +116,14 @@ class TestChartTypes:
 
     def test_big_number_no_label(self, theme):
         fig = big_number(value=42, theme=theme)
+        assert isinstance(fig, go.Figure)
+
+    def test_gauge(self, theme):
+        fig = gauge(value=73, label="Score", theme=theme)
+        assert isinstance(fig, go.Figure)
+
+    def test_gauge_zero(self, theme):
+        fig = gauge(value=0, label="No Show Rate", theme=theme)
         assert isinstance(fig, go.Figure)
 
 
