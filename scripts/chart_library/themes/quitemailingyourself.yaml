@@ -1,0 +1,132 @@
+name: quitemailingyourself
+version: "1.0"
+description: Auto-generated theme from website color extraction
+
+# ── Background ────────────────────────────────────────────────────────────────
+background: "#FAFAFA"
+plot_background: "#FAFAFA"
+
+# ── Text colors ───────────────────────────────────────────────────────────────
+text:
+  title: "#111111"
+  subtitle: "#585858"
+  axis: "#888888"
+  source: "#888888"
+  label: "#585858"
+
+# ── Data palette ──────────────────────────────────────────────────────────────
+palette:
+  - "#7C3AED"
+  - "#F59E0B"
+  - "#065F46"
+  - "#A7F3D0"
+  - "#991B1B"
+  - "#B7638F"
+  - "#1E40AF"
+
+# ── Typography ────────────────────────────────────────────────────────────────
+fonts:
+  family: '"IBM Plex Mono", "IBM Plex Sans", sans-serif'
+
+font_sizes:
+  title: 22
+  subtitle: 13
+  axis_tick: 10
+  axis_label: 11
+  source: 9
+  data_label: 9
+
+font_weights:
+  title: "bold"
+  subtitle: "normal"
+
+# ── Layout ────────────────────────────────────────────────────────────────────
+margins:
+  top: 90
+  bottom: 60
+  left: 60
+  right: 50
+
+# ── Grid ──────────────────────────────────────────────────────────────────────
+grid:
+  color: "#EBEBEB"
+  width: 1
+  horizontal: true
+  vertical: false
+
+# ── Spines ────────────────────────────────────────────────────────────────────
+spines:
+  top: false
+  right: false
+  color: "#DCDCDC"
+  width: 1
+
+# ── Legend ────────────────────────────────────────────────────────────────────
+legend:
+  position: "bottom"
+  orientation: "h"
+  marker: "circle"
+  border: false
+
+# ── Branding ──────────────────────────────────────────────────────────────────
+branding:
+  show: true
+  text: "QUITEMAILINGYOURSELF"
+  position: "bottom_right"
+  color: "#111111"
+  font_size: 10
+  font_weight: "bold"
+
+# ── Source attribution ────────────────────────────────────────────────────────
+source:
+  prefix: "Source: "
+  position: "bottom_left"
+  italic: true
+
+# ── Chart-type overrides ──────────────────────────────────────────────────────
+bar:
+  gap: 0.25
+  group_gap: 0.05
+
+line:
+  width: 2.5
+  end_labels: true
+  markers: false
+  marker_size: 6
+
+area:
+  opacity: 0.75
+  line_width: 0
+
+scatter:
+  marker_size: 8
+  opacity: 0.8
+
+pie:
+  hole: 0.55
+
+table:
+  header_background: "#111111"
+  header_text: "#FFFFFF"
+  highlight_color: "#A7F3D0"
+  border_color: "#EBEBEB"
+
+map:
+  land_color: "#F0F0F0"
+  ocean_color: "#E6E6E6"
+  border_color: "#DCDCDC"
+
+stat_card:
+  value_font_size: 48
+  label_font_size: 14
+  border_radius: 12
+
+big_number:
+  value_font_size: 56
+  label_font_size: 13
+
+gauge:
+  arc_bg_color: "#EBEBEB"
+  value_font_size: 32
+  label_font_size: 13
+  min_max_font_size: 11

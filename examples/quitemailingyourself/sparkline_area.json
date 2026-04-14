@@ -1,0 +1,12 @@
+{
+    "x": "month",
+    "y": [
+        "GPT-4o",
+        "Claude",
+        "Gemini"
+    ],
+    "opacity": 0.5,
+    "theme": "quitemailingyourself",
+    "width": 300,
+    "height": 80
+}

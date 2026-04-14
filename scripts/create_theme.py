@@ -304,7 +304,7 @@ palette:
 
 # ── Typography ────────────────────────────────────────────────────────────────
 fonts:
-  family: "{font_family}"
+  family: '{font_family}'
 
 font_sizes:
   title: 22
