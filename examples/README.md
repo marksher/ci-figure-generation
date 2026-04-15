@@ -12,6 +12,7 @@ Each gallery is a single self-contained HTML file (all images embedded as base64
 | **a16z-news** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/a16z-news/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/a16z-news/all.html) |
 | **care-indeed** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/care-indeed/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/care-indeed/all.html) |
 | **quitemailingyourself** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/quitemailingyourself/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/quitemailingyourself/all.html) |
+| **default** | Plain Plotly defaults (`theme=None`) | [Browse files](default/) |
 
 Each gallery also has a **↓ Download HTML** button in the top-right corner that saves
 the current page (including all embedded images) as a standalone file.
