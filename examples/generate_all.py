@@ -1,5 +1,5 @@
 """
-Generate all.html — gallery of all chart types using the default theme.
+Generate all.html — gallery of all chart types using the news theme.
 Each section shows: chart type / interactive / PNG / SVG at matching sizes,
 plus a collapsible Python code snippet.
 Run from the repo root: python examples/generate_all.py
@@ -13,7 +13,7 @@ import html as _html
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
-EXAMPLES_DIR = os.path.join(os.path.dirname(__file__), "default")
+EXAMPLES_DIR = os.path.join(os.path.dirname(__file__), "news")
 sys.path.insert(0, EXAMPLES_DIR)
 
 from chart_library import load_theme
@@ -95,7 +95,7 @@ def _extract_snippet(py_path: str) -> str:
 
 
 # ── Theme swatch ──────────────────────────────────────────────────────────────
-t = load_theme("default")
+t = load_theme("news")
 
 
 def _swatch_item(color: str, name: str = "") -> str:
