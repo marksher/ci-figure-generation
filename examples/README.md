@@ -9,10 +9,10 @@ Each gallery is a single self-contained HTML file (all images embedded as base64
 
 | Theme | Preview | Download |
 |-------|---------|----------|
-| **default** | [Open preview](https://raw.githack.com/marksher/ci-figure-generation/main/examples/default/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/ci-figure-generation/main/examples/default/all.html) |
-| **news** | [Open preview](https://raw.githack.com/marksher/ci-figure-generation/main/examples/news/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/ci-figure-generation/main/examples/news/all.html) |
-| **care-indeed** | [Open preview](https://raw.githack.com/marksher/ci-figure-generation/main/examples/care-indeed/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/ci-figure-generation/main/examples/care-indeed/all.html) |
-| **quitemailingyourself** | [Open preview](https://raw.githack.com/marksher/ci-figure-generation/main/examples/quitemailingyourself/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/ci-figure-generation/main/examples/quitemailingyourself/all.html) |
+| **default** | [Open preview](https://rawcdn.githack.com/marksher/ci-figure-generation/2ffd004/examples/default/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/ci-figure-generation/main/examples/default/all.html) |
+| **news** | [Open preview](https://rawcdn.githack.com/marksher/ci-figure-generation/2ffd004/examples/news/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/ci-figure-generation/main/examples/news/all.html) |
+| **care-indeed** | [Open preview](https://rawcdn.githack.com/marksher/ci-figure-generation/2ffd004/examples/care-indeed/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/ci-figure-generation/main/examples/care-indeed/all.html) |
+| **quitemailingyourself** | [Open preview](https://rawcdn.githack.com/marksher/ci-figure-generation/2ffd004/examples/quitemailingyourself/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/ci-figure-generation/main/examples/quitemailingyourself/all.html) |
 
 Each gallery also has a **↓ Download HTML** button in the top-right corner that saves
 the current page (including all embedded images) as a standalone file.
