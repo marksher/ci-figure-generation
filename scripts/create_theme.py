@@ -666,8 +666,8 @@ def main():
     os.makedirs(examples_dir, exist_ok=True)
 
     # Copy JSON configs from default, swapping theme name
-    a16z_dir = os.path.join(REPO_ROOT, "examples", "default")
-    create_json_configs(theme_name, a16z_dir, examples_dir)
+    base_dir = os.path.join(REPO_ROOT, "examples", "default")
+    create_json_configs(theme_name, base_dir, examples_dir)
     print(f"  Created JSON configs in {examples_dir}/")
 
     # Generate example .py files
@@ -721,8 +721,8 @@ def main():
     print(f"  Local:  file://{os.path.join(examples_dir, 'all.html')}")
     print(f"  After push:")
     for t in themes:
-        print(f"    https://raw.githack.com/marksher/a16z-chart-library/main/examples/{t}/all.html")
-    print(f"\n  Index:  https://raw.githack.com/marksher/a16z-chart-library/main/examples/index.html")
+        print(f"    https://raw.githack.com/marksher/ci-figure-generation/main/examples/{t}/all.html")
+    print(f"\n  Index:  https://raw.githack.com/marksher/ci-figure-generation/main/examples/index.html")
     print("=" * 60)
 
 

@@ -3,7 +3,7 @@ Name: chart-library
 Version: 0.1.0
 Summary: Themeable Plotly chart library
 License: MIT
-Project-URL: Repository, https://github.com/marksher/a16z-chart-library
+Project-URL: Repository, https://github.com/marksher/ci-figure-generation
 Keywords: plotly,charts,visualization,theme
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
@@ -25,7 +25,7 @@ Every chart function returns a `plotly.graph_objects.Figure` — display it inte
 ## Install
 
 ```bash
-pip install git+https://github.com/marksher/a16z-chart-library.git
+pip install git+https://github.com/marksher/ci-figure-generation.git
 ```
 
 **Dependencies:** `plotly`, `pandas`, `PyYAML`, `kaleido` (for PNG export)

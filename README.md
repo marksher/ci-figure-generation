@@ -9,7 +9,7 @@ Comes bundled with the `news` theme. Pass `theme=None` to skip all styling and u
 ## Install
 
 ```bash
-pip install git+https://github.com/marksher/a16z-chart-library.git
+pip install git+https://github.com/marksher/ci-figure-generation.git
 ```
 
 For PNG export you also need kaleido:

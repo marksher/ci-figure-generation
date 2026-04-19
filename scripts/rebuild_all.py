@@ -167,8 +167,8 @@ def update_readme(themes: list[str]) -> list[str]:
     for t in gallery_themes:
         gallery_rows.append(
             f"| **{t}** "
-            f"| [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/{t}/all.html) "
-            f"| [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/{t}/all.html) |"
+            f"| [Open preview](https://raw.githack.com/marksher/ci-figure-generation/main/examples/{t}/all.html) "
+            f"| [Download HTML](https://raw.githubusercontent.com/marksher/ci-figure-generation/main/examples/{t}/all.html) |"
         )
     gallery_table = (
         "| Theme | Preview | Download |\n"
