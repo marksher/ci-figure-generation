@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paste to Chart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Georgia:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <script src="/static/pretext.js"></script>
+  <style>
+    :root {
+      --bg:         #F0EBE3;
+      --surface:    #EAE4DB;
+      --border:     #D8D0C4;
+      --navy:       #1C2B3A;
+      --maroon:     #7B1A2A;
+      --maroon-dk:  #621523;
+      --muted:      #5A6472;
+      --code-bg:    #E4DED5;
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-ui:    system-ui, -apple-system, sans-serif;
+      --radius:     6px;
+      --shadow:     0 1px 4px rgba(28,43,58,.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--navy);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 32px;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+    header h1 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+    }
+    header p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      min-height: calc(100vh - 61px);
+    }
+
+    /* ── Left panel ─────────────────────────────────────────────── */
+    .panel {
+      border-right: 1px solid var(--border);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      height: 140px;
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 11.5px;
+      line-height: 1.6;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      resize: vertical;
+      color: var(--navy);
+      outline: none;
+      transition: border-color .15s;
+    }
+    textarea:focus { border-color: var(--maroon); }
+    textarea::placeholder { color: var(--muted); opacity: .7; }
+
+    /* Hint */
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: -14px;
+    }
+
+    /* Form rows */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .form-row.triple {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    select, input[type="text"], input[type="number"] {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 7px 10px;
+      font-size: 13px;
+      color: var(--navy);
+      outline: none;
+      width: 100%;
+      transition: border-color .15s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%235A6472' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+    select:focus, input:focus { border-color: var(--maroon); }
+
+    select[multiple] {
+      background-image: none;
+      padding-right: 10px;
+      height: 80px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+    .checkbox-row input[type="checkbox"] { accent-color: var(--maroon); width: 14px; height: 14px; }
+    .checkbox-row label { text-transform: none; font-weight: 400; font-size: 13px; color: var(--navy); }
+
+    /* Generate button */
+    .btn-generate {
+      background: var(--maroon);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 11px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background .15s;
+      letter-spacing: .01em;
+    }
+    .btn-generate:hover { background: var(--maroon-dk); }
+    .btn-generate:disabled { opacity: .5; cursor: default; }
+
+    /* Error banner */
+    .error-banner {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 13px;
+      display: none;
+    }
+    .error-banner.visible { display: block; }
+
+    /* ── Right panel ────────────────────────────────────────────── */
+    .canvas {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+    }
+    .empty-state svg { opacity: .3; }
+    .empty-state p { font-size: 15px; }
+    .empty-state small { font-size: 12px; }
+
+    .chart-wrapper {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .chart-wrapper.visible { display: flex; }
+
+    .chart-container {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    /* JSON output */
+    .json-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .json-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .btn-download {
+      background: transparent;
+      border: 1px solid var(--maroon);
+      color: var(--maroon);
+      border-radius: var(--radius);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: background .15s, color .15s;
+    }
+    .btn-download:hover { background: var(--maroon); color: white; }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: var(--navy);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .panel { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a1a;
+        --surface: #242424;
+        --border: #333;
+        --navy: #e8e0d6;
+        --muted: #888;
+        --code-bg: #1e1e1e;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .spinner { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Paste to Chart</h1>
+  <p>Paste tab-separated data from Excel or Sheets — get an interactive chart instantly.</p>
+</header>
+
+<div class="layout">
+
+  <!-- Left: controls -->
+  <aside class="panel">
+
+    <!-- Data input -->
+    <div>
+      <div class="section-label">Data</div>
+      <textarea
+        id="tsv-input"
+        placeholder="Paste your data here&#10;&#10;Date&#9;Revenue&#9;Costs&#10;2024-01&#9;120&#9;80&#10;2024-02&#9;145&#9;92&#10;2024-03&#9;178&#9;105"
+        spellcheck="false"
+      ></textarea>
+      <p class="hint">Tab-separated. First row = column headers. Paste from Excel, Sheets, or Numbers.</p>
+    </div>
+
+    <!-- Chart type -->
+    <div>
+      <div class="section-label">Chart</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="chart-type">Type</label>
+          <select id="chart-type">
+            {% for ct in chart_types %}
+            <option value="{{ ct }}">{{ ct.replace('_', ' ').title() }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="theme">Theme</label>
+          <select id="theme">
+            {% for t in themes %}
+            <option value="{{ t }}">{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columns -->
+    <div id="columns-section" style="display:none">
+      <div class="section-label">Columns</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="x-col">X / Labels</label>
+          <select id="x-col"></select>
+        </div>
+        <div class="form-group">
+          <label for="y-cols">Y / Values</label>
+          <select id="y-cols" multiple></select>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:6px">Hold Cmd/Ctrl to select multiple Y columns.</p>
+      <div class="checkbox-row" id="stacked-row" style="display:none;margin-top:10px">
+        <input type="checkbox" id="stacked" />
+        <label for="stacked">Stacked</label>
+      </div>
+    </div>
+
+    <!-- Labels -->
+    <div>
+      <div class="section-label">Labels</div>
+      <div class="form-group full" style="margin-bottom:10px">
+        <label for="title">Title</label>
+        <input type="text" id="title" placeholder="Chart title" />
+      </div>
+      <div class="form-group full" style="margin-bottom:10px">
+        <label for="subtitle">Subtitle</label>
+        <input type="text" id="subtitle" placeholder="Supporting detail" />
+      </div>
+      <div class="form-group full">
+        <label for="source">Source</label>
+        <input type="text" id="source" placeholder="Data source" />
+      </div>
+    </div>
+
+    <!-- Size -->
+    <div>
+      <div class="section-label">Size</div>
+      <div class="form-row triple">
+        <div class="form-group">
+          <label for="width">Width</label>
+          <input type="number" id="width" value="900" min="300" max="2000" step="50" />
+        </div>
+        <div class="form-group">
+          <label for="height">Height</label>
+          <input type="number" id="height" value="560" min="200" max="1200" step="50" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-banner" id="error-banner"></div>
+
+    <!-- Generate -->
+    <button class="btn-generate" id="generate-btn" onclick="generate()">
+      Generate Chart
+    </button>
+
+  </aside>
+
+  <!-- Right: chart + JSON -->
+  <main class="canvas">
+
+    <div class="empty-state" id="empty-state">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="28" width="8" height="16" rx="2" fill="currentColor"/>
+        <rect x="16" y="18" width="8" height="26" rx="2" fill="currentColor"/>
+        <rect x="28" y="22" width="8" height="22" rx="2" fill="currentColor"/>
+        <rect x="40" y="10" width="8" height="34" rx="2" fill="currentColor"/>
+      </svg>
+      <p>Paste data and click Generate</p>
+      <small>Supports bar, line, area, scatter, pie, table, map, and diverging bar charts</small>
+    </div>
+
+    <div class="chart-wrapper" id="chart-wrapper">
+      <div class="chart-container" id="chart-container"></div>
+      <div class="json-section">
+        <div class="json-header">
+          <span class="section-label" style="margin:0">JSON Config</span>
+          <button class="btn-download" onclick="downloadJson()">↓ Download JSON</button>
+        </div>
+        <pre id="json-output"></pre>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ── Pretext setup ──────────────────────────────────────────────
+  let _pretextReady = false;
+  let _prepared = new Map();
+
+  async function initPretext() {
+    await document.fonts.ready;
+    _pretextReady = true;
+    relayout();
+  }
+
+  function relayout() {
+    if (!_pretextReady || typeof window.Pretext === 'undefined') return;
+    const { prepare, layout } = window.Pretext;
+    for (const [el, handle] of _prepared) {
+      const lh = parseFloat(getComputedStyle(el).lineHeight) || 20;
+      const { height } = layout(handle, el.clientWidth, lh);
+      el.style.height = height + 'px';
+    }
+  }
+
+  function registerPretext(el) {
+    if (!_pretextReady || typeof window.Pretext === 'undefined') return;
+    const { prepare } = window.Pretext;
+    const font = getComputedStyle(el).font;
+    _prepared.set(el, prepare(el.textContent, font));
+  }
+
+  new ResizeObserver(() => relayout()).observe(document.body);
+  initPretext();
+
+  // ── Column detection on paste ──────────────────────────────────
+  const tsvInput = document.getElementById('tsv-input');
+  let debounceTimer;
+
+  tsvInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(fetchColumns, 400);
+  });
+
+  async function fetchColumns() {
+    const tsv = tsvInput.value.trim();
+    if (!tsv || tsv.split('\n').length < 2) {
+      document.getElementById('columns-section').style.display = 'none';
+      return;
+    }
+    try {
+      const res = await fetch('/columns', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tsv }),
+      });
+      const data = await res.json();
+      if (data.columns) populateColumns(data.columns);
+    } catch (e) { /* silent */ }
+  }
+
+  function populateColumns(cols) {
+    const xSel = document.getElementById('x-col');
+    const ySel = document.getElementById('y-cols');
+    xSel.innerHTML = cols.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+    ySel.innerHTML = cols.map((c, i) => `<option value="${esc(c)}" ${i > 0 ? 'selected' : ''}>${esc(c)}</option>`).join('');
+    document.getElementById('columns-section').style.display = 'block';
+  }
+
+  // Show/hide stacked option for bar charts
+  document.getElementById('chart-type').addEventListener('change', function() {
+    const isBar = this.value === 'bar';
+    document.getElementById('stacked-row').style.display = isBar ? 'flex' : 'none';
+  });
+
+  // ── Generate ───────────────────────────────────────────────────
+  let lastConfig = null;
+
+  async function generate() {
+    const btn = document.getElementById('generate-btn');
+    const errorBanner = document.getElementById('error-banner');
+    clearError();
+
+    const tsv = tsvInput.value.trim();
+    if (!tsv) { showError('Paste some data first.'); return; }
+
+    const yCols = Array.from(document.getElementById('y-cols').selectedOptions).map(o => o.value);
+
+    const payload = {
+      tsv,
+      chart_type: document.getElementById('chart-type').value,
+      theme: document.getElementById('theme').value,
+      x_col: document.getElementById('x-col').value,
+      y_cols: yCols,
+      title: document.getElementById('title').value,
+      subtitle: document.getElementById('subtitle').value,
+      source: document.getElementById('source').value,
+      width: parseInt(document.getElementById('width').value) || 900,
+      height: parseInt(document.getElementById('height').value) || 560,
+      stacked: document.getElementById('stacked').checked,
+    };
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Generating…';
+
+    try {
+      const res = await fetch('/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (data.error) { showError(data.error); return; }
+
+      lastConfig = data.config;
+      renderChart(data.chart_html);
+      renderJson(data.config);
+    } catch (e) {
+      showError('Network error: ' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Generate Chart';
+    }
+  }
+
+  function renderChart(html) {
+    const container = document.getElementById('chart-container');
+    container.innerHTML = html;
+    // Re-run any Plotly scripts
+    container.querySelectorAll('script').forEach(s => {
+      const ns = document.createElement('script');
+      ns.textContent = s.textContent;
+      s.replaceWith(ns);
+    });
+    document.getElementById('empty-state').style.display = 'none';
+    const wrapper = document.getElementById('chart-wrapper');
+    wrapper.classList.add('visible');
+    wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderJson(config) {
+    const pre = document.getElementById('json-output');
+    pre.textContent = JSON.stringify(config, null, 2);
+    registerPretext(pre);
+    relayout();
+  }
+
+  function downloadJson() {
+    if (!lastConfig) return;
+    const blob = new Blob([JSON.stringify(lastConfig, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (lastConfig.title || 'chart').toLowerCase().replace(/\s+/g, '-') + '.json';
+    a.click();
+  }
+
+  function showError(msg) {
+    const b = document.getElementById('error-banner');
+    b.textContent = msg;
+    b.classList.add('visible');
+  }
+  function clearError() {
+    document.getElementById('error-banner').classList.remove('visible');
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Enter to generate from title/source fields
+  ['title','subtitle','source'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') generate();
+    });
+  });
+</script>
+
+</body>
+</html>

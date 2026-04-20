@@ -6,6 +6,21 @@ Comes bundled with the `news` theme. Pass `theme=None` to skip all styling and u
 
 ---
 
+## Quick chart from pasted data
+
+Don't want to write code? Paste tab-separated data straight from Excel or Google Sheets into the web app and get an interactive chart in seconds.
+
+```bash
+cd webapp
+pip install -r requirements.txt
+python app.py
+# Open http://localhost:5000
+```
+
+See [webapp/README.md](webapp/README.md) for details.
+
+---
+
 ## Install
 
 ```bash
