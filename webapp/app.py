@@ -151,7 +151,7 @@ def generate():
         return jsonify({"error": f"Chart error: {e}"}), 400
 
     chart_html = fig.to_html(
-        include_plotlyjs="cdn",
+        include_plotlyjs=False,
         full_html=False,
         config={"displayModeBar": False, "responsive": True},
     )
